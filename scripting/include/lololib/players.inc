@@ -280,3 +280,19 @@ stock int lolo_SteamID3I(const char[] steamid2)
 
 	return B*2 + A;
 }
+
+
+
+#include <geoip>
+
+stock bool lolo_GetClientCountry(int client, char[] string, int maxlength)
+{
+	char sIP[32];
+	GetClientIP(client, sIP, sizeof(sIP));
+	GeoipCountry(sIP, string, maxlength);
+
+	if (strlen(string) < 1)
+	{
+		Format(string, maxlength, "???");
+	}
+}

@@ -3,6 +3,7 @@
 #endif
 #define _lololib_includes_included
 
+#include <lololib/args>
 #include <lololib/chat>
 #include <lololib/general>
 #include <lololib/players>
