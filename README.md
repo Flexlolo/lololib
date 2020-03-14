@@ -1,2 +1,2 @@
 # lololib
-Function collection
+SourcePawn function collection
