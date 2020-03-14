@@ -4,157 +4,204 @@
 #define _lololib_args_included
 
 
-stock bool lolo_Args_Char_Escaped(const char[] string, int index)
+
+stock bool lolo_Args_Char_Escaped(const char[] string, int index, bool recursive = true)
 {
-	// escaped
-	if (index > 0 && string[index - 1] == '\\')
+	if (recursive)
 	{
-		// not escaped
-		if (index > 1 && string[index - 2] == '\\')
+		bool escaped = false;
+
+		for (int i = index; i > 0; i--)
 		{
-			return false;
+			if (lolo_Args_Char_Escaped(string, i, false)) escaped = !escaped;
+			else break;
 		}
 
-		return true;
+		return escaped;
 	}
-
-	return false;
+	else
+	{
+		return (index > 0 && string[index - 1] == '\\');
+	}
 }
 
-stock ArrayList lolo_Args_Split(const char[] sArgs, int parts = 0)
+stock void lolo_Args_String_Clear(char[] string, int maxlength, bool space)
 {
-	int maxlength = strlen(sArgs);
-	if (!maxlength) return null;
-
-	char[] buffer = new char[maxlength + 1];
-	strcopy(buffer, maxlength + 1, sArgs);
-
-	bool done;
-
-	ArrayList args = new ArrayList(maxlength);
+	int length = strlen(string);
+	if (!length) return;
 	
-	do
+	int at = length - 1;
+	bool done = false;
+
+	while (!done)
 	{
-		int buffer_len = strlen(buffer);
-
-		// starts with quote
-		if (StrContains(buffer, "\"") == 0)
+		for (int i = at; i > 0; i--)
 		{
-			// quote closed
-			int search;
-			bool added;
+			at = i;
 
-			while (!done)
+			if (string[i] == '\"' || string[i] == ' ' || (space && at + 1 == length && string[i] == '\\'))
 			{
-				if (search + 1 == buffer_len) break;
-				int contains = StrContains(buffer[search + 1], "\"");
-				if (contains == -1) break;
-				search += contains + 1;
+				if (!lolo_Args_Char_Escaped(string, i)) continue;
 
-				// possible closing quote
-				if (!lolo_Args_Char_Escaped(buffer, search))
-				{
-					// end of string or end of arg
-					if (search == buffer_len - 1 || buffer[search + 1] == ' ')
-					{
-						// escape symbol
-						int length = search;
+				char[] temp = new char[maxlength];
+				if (i > 1) strcopy(temp, i, string);
+				strcopy(temp[strlen(temp)], maxlength - strlen(temp), string[i]);
+				strcopy(string, maxlength, temp);
 
-						if (length > 2)
-						{
-							if (buffer[search-1] == '\\')
-							{
-								if (buffer[search-2] == '\\')
-								{
-									length--;
-								}	
-							}
-						}
-
-						// add
-						char[] arg = new char[length];
-						strcopy(arg, length, buffer[1]);
-						args.PushString(arg);
-
-						if (search == buffer_len - 1)
-							done = true;
-						else
-							strcopy(buffer, strlen(buffer[search + 2]), buffer[search + 2]);
-
-						added = true;
-						break;
-					}
-				}
-			}
-
-			if (added) continue;
-		}
-
-		// find any non-space
-		int char_start = -1;
-
-		for (int i; i < buffer_len; i++)
-		{
-			if (!IsCharSpace(buffer[i])) 
-			{
-				char_start = i;
+				at -= 1;
+				length -= 1;
 				break;
 			}
 		}
 
-		if (char_start == -1) done = true;
-		else
-		{
-			// find any valid space
-			int search = char_start;
-			bool added;
+		if (at < 2) done = true; 
+	}
 
+	return;
+}
+
+stock bool lolo_Args_String_Empty(const char[] string)
+{
+	for (int i; i < strlen(string); i++)
+	{
+		if (!IsCharSpace(string[i])) 
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+
+stock ArrayList lolo_Args_Split(const char[] string)
+{
+	int maxlength = strlen(string);
+	if (!maxlength) return null;
+
+	char[] buffer = new char[maxlength + 1];
+	strcopy(buffer, maxlength + 1, string);
+
+	ArrayList args = new ArrayList(maxlength);
+
+	bool done;
+	
+	do
+	{
+		// check if buffer is empty
+		int buffer_len = strlen(buffer);
+		if (!buffer_len) break;
+
+		if (lolo_Args_String_Empty(buffer)) break;
+
+		// find first char
+		int start = 0;
+		while (IsCharSpace(buffer[start])) start += 1;
+
+		// cut buffer
+		if (start)
+		{
+			strcopy(buffer, maxlength + 1, buffer[start]);
+			buffer_len -= start;
+		}
+
+		// starts with quote
+		if (buffer[0] == '\"')
+		{
+			bool added = false;
+			int search = 0;
+
+			// split at valid quote end
 			while (!done)
 			{
+				// EOS
 				if (search + 1 == buffer_len) break;
-				int contains = StrContains(buffer[search + 1], " ");
-				if (contains == -1) break;
-				search += contains + 1;
 
-				if (!lolo_Args_Char_Escaped(buffer, search))
-				{
-					// escape symbol
-					int length = search - char_start + 1;
+				// find end quote
+				int quote_end = StrContains(buffer[search + 1], "\""); 	
+				if (quote_end == -1) break;
 
-					if (length > 2)
-					{
-						if (buffer[search-1] == '\\')
-						{
-							if (buffer[search-2] == '\\')
-							{
-								length--;
-							}	
-						}
-					}
+				search += quote_end + 1;
 
-					// add
-					char[] arg = new char[length];
-					strcopy(arg, length, buffer[char_start]);
-					args.PushString(arg);
+				// not escaped
+				if (lolo_Args_Char_Escaped(buffer, search)) continue;
 
-					//PrintToServer("buffer: %s\nbuffer after cut: %s\nlen: %d\n", buffer, buffer[search + 1], strlen(buffer[search + 1]));
+				// EOS
+				if (search + 1 != buffer_len && buffer[search + 1] != ' ') continue;
 
-					if (search == buffer_len - 1)
-						done = true;
-					else
-						strcopy(buffer, maxlength, buffer[search + 1]);
+				// get arg
+				int length = search;
+				if (search > 1 && buffer[search - 1] == '\\' && !lolo_Args_Char_Escaped(buffer, search - 1)) length--;
 
-					added = true;
-					break;
-				}
+				char[] arg = new char[length];
+				strcopy(arg, length, buffer[1]);
+
+				// de-escape
+				lolo_Args_String_Clear(arg, length, false);
+
+				// add
+				args.PushString(arg);
+				added = true;
+
+				// if EOS then done
+				if (search + 1 == buffer_len) done = true;
+				else strcopy(buffer, maxlength + 1, buffer[search + 2]);
+
+				break;
 			}
 
-			if (!added) 
-			{
-				// add remainder
-				args.PushString(buffer[char_start]);
-				done = true;
-			}
+			if (added) continue;	
+		}
+
+		// doesnt start with quote OR not closed quote
+		bool added = false;
+		int search = 0;
+		
+		// split at space
+		while (!done)
+		{
+			// EOS
+			if (search + 1 == buffer_len) break;
+
+			// find space
+			int space = StrContains(buffer[search + 1], " "); 	
+			if (space == -1) break;
+
+			search += space + 1;
+
+			// not escaped
+			if (lolo_Args_Char_Escaped(buffer, search)) continue;
+
+			// get arg
+			int length = search + 1;
+			if (search > 1 && buffer[search - 1] == '\\' && !lolo_Args_Char_Escaped(buffer, search - 1)) length--;
+
+			char[] arg = new char[length];
+			strcopy(arg, length, buffer);
+
+			// de-escape
+			lolo_Args_String_Clear(arg, length, true);
+
+			// add
+			args.PushString(arg);
+			added = true;
+
+			// if EOS then done
+			if (search + 1 == buffer_len) done = true;
+			else strcopy(buffer, maxlength + 1, buffer[search + 1]);
+
+			break;
+		}		
+
+		// add remainder		
+		if (!added) 
+		{
+			// de-escape
+			lolo_Args_String_Clear(buffer, maxlength + 1, false);
+
+			args.PushString(buffer);
+			done = true;
 		}
 	}
 	while (!done);
