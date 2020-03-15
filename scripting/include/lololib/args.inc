@@ -206,5 +206,11 @@ stock ArrayList lolo_Args_Split(const char[] string)
 	}
 	while (!done);
 
+	if (!args.Length)
+	{
+		delete args;
+		return null;
+	}
+
 	return args;
 }
