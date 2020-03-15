@@ -3,8 +3,6 @@
 #endif
 #define _lololib_players_included
 
-
-
 stock bool lolo_IsClientValid(int client, bool bot_valid = false)
 {
 	if (client > 0 && client <= MaxClients)
@@ -19,8 +17,6 @@ stock bool lolo_IsClientValid(int client, bool bot_valid = false)
 	}
 	return false;
 }
-
-
 
 stock bool lolo_IsClientAdmin(int client)
 {
@@ -39,9 +35,9 @@ stock bool lolo_CheckClientAdminFlag(int client, AdminFlag flag, AdmAccessMode m
 	return false;
 }
 
-
-
-
+/*
+WRAPPERS
+*/
 
 stock void lolo_GetClientPosition(int client, float vector[3])
 {
@@ -67,8 +63,6 @@ stock void lolo_GetClientAbsVelocity(int client, float vector[3])
 {
 	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", vector);
 }
-
-
 
 stock float lolo_GetClientVelocityLengtn(int client, bool x, bool y, bool z)
 {
@@ -103,16 +97,10 @@ stock float lolo_GetClientAbsVelocityLengtn(int client, bool x, bool y, bool z)
 	return GetVectorLength(vector);
 }
 
-
-
 stock int lolo_GetClientWaterLevel(int client)
 {
 	return GetEntProp(client, Prop_Data, "m_nWaterLevel");
 }
-
-
-
-
 
 stock void lolo_SetClientHealth(int client, int health)
 {
@@ -135,8 +123,6 @@ stock bool lolo_GetClientGod(int client)
 {
 	return GetEntProp(client, Prop_Data, "m_takedamage") == 0;
 }
-
-
 
 stock int lolo_GetClientSpecTarget(int client)
 {
@@ -162,10 +148,7 @@ stock int lolo_SetClientSpecTarget(int client, int target)
 
 
 
-
 #include <lololib/strings>
-
-
 
 /*
 Searches through valid players and finds one with spricified name
@@ -173,9 +156,7 @@ Searches through valid players and finds one with spricified name
 return client if found;
 return 0 if more than one client is matching
 return -1 if none are found
-
 */
-
 stock int lolo_Find_Name(const char[] name, bool case_sensitive)
 {
 	int count;
@@ -210,9 +191,7 @@ Searches through valid players and finds one with spricified SteamID
 
 return client if found;
 return -1 if none are found
-
 */
-
 stock int lolo_Find_SteamID(const char[] steamid, bool case_sensitive)
 {
 	char client_steamid[32];
@@ -237,7 +216,6 @@ stock int lolo_Find_SteamID(const char[] steamid, bool case_sensitive)
 /*
 Converts new SteamID3 to old SteamID2 format
 */
-
 stock void lolo_SteamID2(char[] string, int maxlength, const char[] steamid3)
 {
 	/*
@@ -261,7 +239,6 @@ stock void lolo_SteamID2(char[] string, int maxlength, const char[] steamid3)
 /*
 Converts old SteamID2 format to unique SteamID3 integer
 */
-
 stock int lolo_SteamID3I(const char[] steamid2)
 {
 	/*

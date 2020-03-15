@@ -3,7 +3,6 @@
 #endif
 #define _lololib_general_included
 
-
 // probably not relevant
 stock void lolo_CloseHandle(Handle &hndl)
 {

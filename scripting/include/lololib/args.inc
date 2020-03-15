@@ -3,8 +3,6 @@
 #endif
 #define _lololib_args_included
 
-
-
 stock bool lolo_Args_Char_Escaped(const char[] string, int index, bool recursive = true)
 {
 	if (recursive)

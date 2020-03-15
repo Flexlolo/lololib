@@ -36,7 +36,6 @@ it then tries to find player by SteamID if starts with '#' or by name otherwise
 
 Requires handle to be closed afterwards.
 */
-
 stock ArrayList lolo_Target_Process(int client, const char[] sTarget, bool case_sensitive = true)
 {
 	ArrayList hTargets = new ArrayList(1);

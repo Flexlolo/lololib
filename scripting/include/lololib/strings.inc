@@ -3,8 +3,6 @@
 #endif
 #define _lololib_strings_included
 
-
-
 /*
 Characters
 */
@@ -59,8 +57,6 @@ stock int lolo_Chars_Count(const char[] string, bool spaces)
 	return char_count;
 }
 
-
-
 /*
 Colors
 */
@@ -71,8 +67,6 @@ stock void lolo_GetTeamColorString(int team, char[] string, int maxlength)
 	else if (team == 3) Format(string, maxlength, "\x0799CCFF");
 	else Format(string, maxlength, "\x07CCCCCC");
 }
-
-
 
 /*
 Strings
