@@ -5,6 +5,7 @@
 
 #include <lololib/args>
 #include <lololib/chat>
+#include <lololib/country>
 #include <lololib/general>
 #include <lololib/players>
 #include <lololib/strings>
