@@ -146,6 +146,27 @@ stock int lolo_SetClientSpecTarget(int client, int target)
 	SetEntProp(client, Prop_Send, "m_iObserverMode", 4);
 }
 
+stock int lolo_GetClientFrags(int client)
+{
+	return GetEntProp(client, Prop_Data, "m_iFrags");
+}
+
+stock void lolo_SetClientFrags(int client, int frags)
+{
+	SetEntProp(client, Prop_Data, "m_iFrags", frags);
+}
+
+stock int lolo_GetClientDeaths(int client)
+{
+	return GetEntProp(client, Prop_Data, "m_iDeaths");
+}
+
+stock void lolo_SetClientDeaths(int client, int deaths)
+{
+	SetEntProp(client, Prop_Data, "m_iDeaths", deaths);
+}
+
+
 
 
 #include <lololib/strings>

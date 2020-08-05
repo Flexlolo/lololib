@@ -57,10 +57,18 @@ stock void lolo_SayText_All(const char[] message, int author, bool mutable)
 	}
 }
 
+/*
 stock void lolo_PrintToChat(int client, const char[] format, any:...)
 {
 	char buffer[252*2];
 	VFormat(buffer, sizeof(buffer), format, 3);
 	
+	lolo_SayText(client, buffer, client, true);
+
+}
+*/
+
+stock void lolo_PrintToChat(int client, const char[] buffer)
+{
 	lolo_SayText(client, buffer, client, true);
 }
