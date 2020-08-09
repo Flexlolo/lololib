@@ -72,6 +72,30 @@ stock void lolo_GetTeamColorString(int team, char[] string, int maxlength)
 Strings
 */
 
+stock ArrayList lolo_String_ToList(const char[] string)
+{
+	ArrayList list = new ArrayList(4);
+	char c[5];
+	int mb;
+
+	for (int i = 0; i < strlen(string); i++)
+	{
+		mb = IsCharMB(string[i]);
+		strcopy(c, (mb ? mb : 1) + 1, string[i]);
+		list.PushString(c);
+
+		i += mb ? mb - 1 : 0;
+	}
+
+	if (!list.Length)
+	{
+		delete list;
+		return null;
+	}
+
+	return list;
+}
+
 stock void lolo_String_Lower(char[] string)
 {
 	for (int i; i < strlen(string); i++)
@@ -96,4 +120,11 @@ stock void lolo_String_Remove(char[] string, int maxlength, const char[] remove)
 stock bool lolo_String_Startswith(const char[] string, const char[] start, bool case_sensitive = true)
 {
 	return StrContains(string, start, case_sensitive) == 0;
+}
+
+stock void lolo_String_Append(char[] string, int maxlength, const char[] append)
+{
+	int l = strlen(string);
+	int s = maxlength - l;
+	strcopy(string[l], s, append);
 }
