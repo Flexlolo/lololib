@@ -19,4 +19,8 @@
 !translations/
 !translations/**
 
+!tools
+!tools/
+!tools/**
+
 !build.sh
