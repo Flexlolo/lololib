@@ -1,3 +1,8 @@
+#if defined _lololib_country_included
+  #endinput
+#endif
+#define _lololib_country_included
+
 #include <geoip>
 
 stock bool lolo_GetClientCountry(int client, char[] string, int maxlength, bool geoipcity=false)
