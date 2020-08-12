@@ -8,6 +8,7 @@
 #include <lololib/country>
 #include <lololib/general>
 #include <lololib/macros>
+#include <lololib/ndim>
 #include <lololib/players>
 #include <lololib/strings>
 #include <lololib/target>
