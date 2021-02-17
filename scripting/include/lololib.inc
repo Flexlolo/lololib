@@ -12,3 +12,4 @@
 #include <lololib/players>
 #include <lololib/strings>
 #include <lololib/target>
+#include <lololib/trace>

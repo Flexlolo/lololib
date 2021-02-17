@@ -166,7 +166,10 @@ stock void lolo_SetClientDeaths(int client, int deaths)
 	SetEntProp(client, Prop_Data, "m_iDeaths", deaths);
 }
 
-
+stock int lolo_GetClientFOV(int client)
+{
+	GetEntProp(client, Prop_Send, "m_iFOV");
+}
 
 
 #include <lololib/strings>
